@@ -23,7 +23,6 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>User Id</th>
                 <th>Id</th>
                 <th>Title</th>
                 <th>Completed</th>
@@ -37,6 +36,9 @@
         <!-- <li class="page-item"><button class="page-link disabled" onclick="getData(1)" id="prev">Previous</button></li>
         <li class="page-item"><button class="page-link" onclick="getData(2)" id="next">Next</button></li> -->
         <li class="page-item  disabled"  id="prev"><a href="#" class="page-link" onclick="minus();getData();"><</a></li>
+        <li class="page-item" ><a href="#" class="page-link" onclick="minus();getData()" id="n1">1</a></li>
+        <li class="page-item" ><a href="#" class="page-link" onclick="add();getData();" id="n2">2</a></li>
+        <li class="page-item" ><a href="#" class="page-link" onclick="add(2);" id="etc">....</a></li>
         <li class="page-item" id="next"><a href="#" class="page-link" onclick="add();getData();" >></a></li>
     </ul>
     <!-- Bootstrap JavaScript Libraries -->
@@ -49,8 +51,19 @@
         </script>
 
     <script>
+        fetch(`https://jsonplaceholder.typicode.com/todos`)
+                .then(response => response.json())
+                .then(json => { 
+                    tbody.innerHTML = '';
+                    for(let i = 0;i<=10;i++)
+                    {  
+                        ptable(json[i]);
+                    }});
         var tbody = document.getElementById("users");
         var pg = 0;
+        var n1 = document.getElementById("n1");
+        var n2 = document.getElementById("n2");
+        var etc = document.getElementById("etc");
         // function srchData() {
 
 
@@ -116,23 +129,33 @@
         //             }
         //         });
         // }
-        function add(){
-            
-            if(pg == 20)
+        function add(p = 1){
+            if(pg >= 19 || pg+p >=19)
             {
-                pg == 20;
+                pg == 19;
+                n1.innerHTML = `19`;
+                n2.innerHTML = `20`;
             }
             else{
-                pg ++;
+                pg += p;
+                n1.innerHTML = `${pg+1}`;
+                n2.innerHTML = `${pg+2}`;
+                pg1 = pg+1;
+                pg2 = pg+2;
             }
         }
-        function minus(){
-            if(pg == 1){
-                pg == 1;
+        function minus(p = 1){
+            if(pg <= 0){
+                pg == 0;
             }
             else{
-                pg --;
+                pg -= 1;
             }
+                n1.innerHTML = `${pg+1}`;
+                n2.innerHTML = `${pg+2}`;
+                pg1 = pg+1;
+                pg2 = pg+2;
+            
         }
         function getData()
         {   var prev = document.getElementById("prev");
@@ -149,23 +172,26 @@
                         console.log(json[i+k]);
                         ptable(json[i+k]);
                     }});
-            if(pg == 1){
+            if(pg == 0){
                 prev.classList.add("disabled");
                 next.classList.remove("disabled");
+                n1.classList.add("disabled");
             }
-            else if(pg == 19){
+            else if(pg >= 18){
                 prev.classList.remove("disabled");
                 next.classList.add("disabled");
+                n2.classList.add("disabled");
             }
             else{
                 prev.classList.remove("disabled");
                 next.classList.remove("disabled");
+                n1.classList.remove("disabled");
+                n2.classList.remove("disabled");
             }
         }
         function ptable(user){
             var row = `
                         <tr>
-                            <td>${user.userId}</td>
                             <td>${user.id}</td>
                             <td>${user.title}</td>
                             <td>${user.completed}</td>
